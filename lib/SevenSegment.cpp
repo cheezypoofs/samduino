@@ -22,7 +22,6 @@ const uint8_t kDigit9 = 0xF6;   // 1111 0110
 
 SevenSegment::SevenSegment( SevenSegmentState& state )
     : m_state( state )
-    , m_displayWork( nullptr )
 {
     const uint8_t* pins = &m_state.PinA;
     for ( uint8_t i = 0; i < 8; i++ )

@@ -4,6 +4,8 @@ project (samduino-lib)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+include(CTest)
+include(FindGTest)
 include(conanbuildinfo.cmake)
 CONAN_BASIC_SETUP()
 
@@ -16,7 +18,6 @@ add_library (
 
 add_executable (
     test_samduino
-
     "${PROJECT_SOURCE_DIR}/test/ArduinoTestState.cpp"
 
     "${PROJECT_SOURCE_DIR}/lib/SchedulerTest.cpp"
@@ -25,12 +26,13 @@ add_executable (
     "${PROJECT_SOURCE_DIR}/test/main.cpp"
 )
 
+gtest_add_tests(test_samduino "" AUTO)
+
 target_link_libraries(
     test_samduino
         samduino
         "${CONAN_LIBS}"
 )
-
 
 include_directories(
     "${PROJECT_SOURCE_DIR}/lib"

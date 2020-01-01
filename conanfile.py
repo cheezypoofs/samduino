@@ -4,8 +4,8 @@ import conans
 import glob
 
 class ArduinoLibConan(conans.ConanFile):
-    name = "samduino-lib"
-    url = "<todo>"
+    name = "samduino"
+    url = "https://github.com/cheezypoofs/samduino"
 
     exports_sources = []
 
@@ -25,6 +25,7 @@ class ArduinoLibConan(conans.ConanFile):
         cmake = conans.CMake(self)
         cmake.configure(build_folder="build")
         cmake.build()
+        cmake.test(output_on_failure=True)
 
     def package(self):
         self.copy(pattern="*.cpp", excludes="*Test*", src="lib")

@@ -10,6 +10,8 @@ namespace
 
 ArduinoTestState* g_state;
 
+// Helper to ensure the global state is set before returning a reference
+// to it.
 ArduinoTestState& AssertState()
 {
     if ( g_state == nullptr )
@@ -151,6 +153,8 @@ InputOutputProvider& ArduinoTestState::GetInputOutputProvider() const
     return *m_io;
 }
 
+////////////
+// The global arduino functions
 ////////////
 
 extern "C"

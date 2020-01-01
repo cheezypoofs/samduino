@@ -1,12 +1,21 @@
 #ifndef ArduinoTestState_h
 #define ArduinoTestState_h
 
+/**
+ * ArduinoTestState exposes helpers to setup and teardown
+ * the global arduino emulation state.
+ */
+
 #include <chrono>
 #include <mutex>
 #include <unordered_map>
 
 #include "Arduino.h"
 
+/**
+ * TimeProvider describes a test implementation of the time
+ * functions.
+ */
 class TimeProvider
 {
 public:
@@ -18,6 +27,10 @@ public:
     virtual void DelayMicroseconds( unsigned long ) = 0;
 };
 
+/**
+ * MonotonicTimeProvider implements TimeProvider using the c++11
+ * monotonic clock.
+ */
 class MonotonicTimeProvider : public TimeProvider
 {
 public:
@@ -33,6 +46,10 @@ private:
     std::chrono::steady_clock::time_point m_start;
 };
 
+/**
+ * InputOutputProvider describes a test implementation of the i/o
+ * functions in the arduino.
+ */
 class InputOutputProvider
 {
 public:
@@ -43,6 +60,10 @@ public:
     virtual int DigitalRead( uint8_t pin ) = 0;
 };
 
+/**
+ * InMemoryInputOutputProvider is an implemenrtation of InputOutputProvider
+ * that allows for direct manipulation and checking of i/o state during testing.
+ */
 class InMemoryInputOutputProvider : public InputOutputProvider
 {
 public:
@@ -76,16 +97,33 @@ private:
     std::unordered_map< uint8_t, PinState > m_pins;
 };
 
+/**
+ * An ArduinoTestState should be created per test case to setup and teardown
+ * the global arduino functions available for testing.
+ * No providers are setup by default, and each needed provider must be
+ * set explicitly.
+ */
 class ArduinoTestState
 {
 public:
     ArduinoTestState();
+    ArduinoTestState( const ArduinoTestState& ) = delete;
     virtual ~ArduinoTestState();
 
-    void SetTimeProvider( TimeProvider* time ) { m_time = time; }
+    ArduinoTestState& SetTimeProvider( TimeProvider* time )
+    {
+        m_time = time;
+        return *this;
+    }
+
     TimeProvider& GetTimeProvider() const;
 
-    void SetInputOutputProvider( InputOutputProvider* io ) { m_io = io; }
+    ArduinoTestState& SetInputOutputProvider( InputOutputProvider* io )
+    {
+        m_io = io;
+        return *this;
+    }
+
     InputOutputProvider& GetInputOutputProvider() const;
 
 private:
